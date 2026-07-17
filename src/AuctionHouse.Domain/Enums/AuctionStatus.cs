@@ -1,5 +1,9 @@
-public enum Status
+namespace AuctionHouse.Domain.Enums;
+
+public enum AuctionStatus
 {
+    Scheduled,
     Active,
-    Inactive, 
+    Ended,
+    Cancelled
 }
