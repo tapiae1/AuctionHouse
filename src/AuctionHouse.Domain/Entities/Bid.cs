@@ -9,7 +9,7 @@ public class Bid {
 
     private Bid() { }
 
-    public static Bid Create(Guid id, Guid auctionId, Guid bidderId, decimal amount) {
+    public static Bid Create(Guid auctionId, Guid bidderId, decimal amount) {
         return new Bid{
             Id = Guid.NewGuid(),
             AuctionId = auctionId,
