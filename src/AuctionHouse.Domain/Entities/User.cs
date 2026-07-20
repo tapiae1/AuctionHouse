@@ -1,0 +1,21 @@
+namespace AuctionHouse.Domain.Entities; 
+
+public class User {
+    public Guid Id { get; private set; }
+    public string Username { get; private set; } = string.Empty; 
+    public string Email { get; private set; } = string.Empty; 
+    public string PasswordHash { get; private set; } = string.Empty; 
+    public decimal Balance { get; private set; }
+
+    private User() { }
+
+    public static User Create(string username, string email, string passwordHash, decimal balance) {
+        return new User{
+            Id = Guid.NewGuid(), 
+            Username = username, 
+            Email = email, 
+            PasswordHash = passwordHash, 
+            Balance = balance
+        };
+    }
+}
