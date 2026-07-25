@@ -4,5 +4,7 @@
     <Project Path="src/AuctionHouse.Application/AuctionHouse.Application.csproj" />
     <Project Path="src/AuctionHouse.Domain/AuctionHouse.Domain.csproj" />
     <Project Path="src/AuctionHouse.Infrastructure/AuctionHouse.Infrastructure.csproj" />
+    <Project Path="tests/AuctionHouse.Infrastructure.Tests/AuctionHouse.Infrastructure.Tests.csproj" />
   </Folder>
+  <Folder Name="/tests/" />
 </Solution>
