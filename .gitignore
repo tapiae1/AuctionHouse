@@ -6,6 +6,9 @@
 
 .mcp.json
 
+# Claude Code local settings and worktrees
+.claude/*
+!.claude/settings.json
 
 # dotenv files
 .env
