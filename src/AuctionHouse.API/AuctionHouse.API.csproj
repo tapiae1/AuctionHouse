@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AuctionHouse.Infrastructure\AuctionHouse.Infrastructure.csproj" />
     <ProjectReference Include="..\AuctionHouse.Application\AuctionHouse.Application.csproj" />
   </ItemGroup>
 
