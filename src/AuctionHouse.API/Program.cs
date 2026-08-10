@@ -7,6 +7,7 @@
 using AuctionHouse.Domain.Repositories;
 using AuctionHouse.Infrastructure.Repositories; 
 using AuctionHouse.Application.Services;
+using AuctionHouse.Domain.Entities;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddSingleton<IAuctionRepository, AuctionRepository>();
+builder.Services.AddSingleton<IAuctionRepository, AuctionRepository>();// TODO: change this whenever there is a real database. 
 builder.Services.AddSingleton<IBidRepository, BidRepository>();
 builder.Services.AddScoped<PlaceBidService>();
 
@@ -28,10 +29,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Endpoints (server side code) 
+app.MapPost("/auctions/{auctionId}/bids", async (Guid auctionId, PlaceBidRequest request, PlaceBidService service) => await service.PlaceBidAsync(auctionId, request.BidderId, request.Amount));
 
 app.Run();
 
-
+// Make the DTO (data transfer object)
+record PlaceBidRequest(Guid BidderId, decimal Amount);
 
 
 //Jade-Monet Wiglesworth loves Eduardo Alberto Tapia-Gonzalez very much! <3
