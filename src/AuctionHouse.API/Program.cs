@@ -7,7 +7,7 @@
 using AuctionHouse.Domain.Repositories;
 using AuctionHouse.Infrastructure.Repositories; 
 using AuctionHouse.Application.Services;
-using AuctionHouse.Domain.Entities;
+using AuctionHouse.Domain.Exceptions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,9 +30,23 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Endpoints (server side code) 
-app.MapPost("/auctions/{auctionId}/bids", async (Guid auctionId, PlaceBidRequest request, PlaceBidService service) => await service.PlaceBidAsync(auctionId, request.BidderId, request.Amount));
+app.MapPost("/auctions/{auctionId}/bids", async (Guid auctionId, PlaceBidRequest request, PlaceBidService service) =>
+{
+    // Wrapping in a try/catch clause because the bid might not be valid, or the auction was not found.
+    try
+    {
+        var bid = await service.PlaceBidAsync(auctionId, request.BidderId, request.Amount);
+        return Results.Ok(bid);
+    }
+    catch (DomainException ex)
+    {
+        Console.WriteLine(ex.Message);
+        return Results.BadRequest(ex.Message);
+    }
 
-app.Run();
+});
+
+app.Run();  
 
 // Make the DTO (data transfer object)
 record PlaceBidRequest(Guid BidderId, decimal Amount);
