@@ -17,7 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IAuctionRepository, AuctionRepository>();// TODO: change this whenever there is a real database. 
 builder.Services.AddSingleton<IBidRepository, BidRepository>();
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddScoped<PlaceBidService>();
+builder.Services.AddScoped<CreateAuctionService>();
 
 var app = builder.Build();
 
@@ -30,6 +32,22 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Endpoints (server side code) 
+// ***** CREATE AUCTION ******
+app.MapPost("/auctions", async (CreateAuctionRequest request, CreateAuctionService service) =>
+{
+    try
+    {
+        var auction = await service.CreateAuctionAsync(request.sellerId, request.title, request.description, request.startingPrice, request.startTime, request.endTime);
+        return Results.Created($"/auctions/{auction.Id}", auction);
+    }
+    catch (DomainException ex)
+    {
+        Console.WriteLine(ex.Message);
+        return Results.BadRequest();
+    }
+});
+
+// ***** PLACE BID ***** 
 app.MapPost("/auctions/{auctionId}/bids", async (Guid auctionId, PlaceBidRequest request, PlaceBidService service) =>
 {
     // Wrapping in a try/catch clause because the bid might not be valid, or the auction was not found.
@@ -40,15 +58,15 @@ app.MapPost("/auctions/{auctionId}/bids", async (Guid auctionId, PlaceBidRequest
     }
     catch (DomainException ex)
     {
-        Console.WriteLine(ex.Message);
-        return Results.BadRequest(ex.Message);
+        Console.WriteLine(ex.Message); // Won't scale well whenever more endpoints are added. 
+        return Results.BadRequest(ex.Message); // TODO: Fix the auction not found as a 404 instead as 400 (PlaceBidService.cs:28)
     }
-
 });
 
 app.Run();  
 
-// Make the DTO (data transfer object)
+// DTOs (Data Transfer Objects)
+record CreateAuctionRequest(Guid sellerId, string title, string description, decimal startingPrice, DateTime startTime, DateTime endTime);
 record PlaceBidRequest(Guid BidderId, decimal Amount);
 
 
