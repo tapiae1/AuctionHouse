@@ -25,7 +25,7 @@ public class PlaceBidService
         var auction = await _auctionRepository.GetByIdAsync(auctionId);
         if (auction == null)
         {
-            throw new DomainException("Auction not found");// TODO: Not a domain exception technically. Nothing about the domains rules are being violated. The record just doesn't exist.
+            throw new NotFoundException("Auction not found");// 
         }
        
         // Place the bid, then update auction repo

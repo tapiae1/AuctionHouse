@@ -40,10 +40,10 @@ app.MapPost("/auctions", async (CreateAuctionRequest request, CreateAuctionServi
         var auction = await service.CreateAuctionAsync(request.sellerId, request.title, request.description, request.startingPrice, request.startTime, request.endTime);
         return Results.Created($"/auctions/{auction.Id}", auction);
     }
-    catch (DomainException ex)
+    catch (NotFoundException ex) // Seller doesn't exist 
     {
         Console.WriteLine(ex.Message);
-        return Results.BadRequest();
+        return Results.NotFound(ex.Message);
     }
 });
 
@@ -56,16 +56,21 @@ app.MapPost("/auctions/{auctionId}/bids", async (Guid auctionId, PlaceBidRequest
         var bid = await service.PlaceBidAsync(auctionId, request.BidderId, request.Amount);
         return Results.Ok(bid);
     }
-    catch (DomainException ex)
+    catch (NotFoundException ex)
     {
         Console.WriteLine(ex.Message); // Won't scale well whenever more endpoints are added. 
-        return Results.BadRequest(ex.Message); // TODO: Fix the auction not found as a 404 instead as 400 (PlaceBidService.cs:28)
+        return Results.NotFound(ex.Message);
+    }
+    catch (DomainException ex)
+    {
+        Console.WriteLine(ex.Message);
+        return Results.BadRequest(ex.Message);
     }
 });
 
 // ***** GET AUCTION *****
 app.MapGet("/auctions/{auctionId}", async (Guid auctionId, IAuctionRepository repository) =>
-{ 
+{
     var auction = await repository.GetByIdAsync(auctionId);
     if (auction == null)
     {
