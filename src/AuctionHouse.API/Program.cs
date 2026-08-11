@@ -63,6 +63,17 @@ app.MapPost("/auctions/{auctionId}/bids", async (Guid auctionId, PlaceBidRequest
     }
 });
 
+// ***** GET AUCTION *****
+app.MapGet("/auctions/{auctionId}", async (Guid auctionId, IAuctionRepository repository) =>
+{ 
+    var auction = await repository.GetByIdAsync(auctionId);
+    if (auction == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(auction);
+});
+
 app.Run();  
 
 // DTOs (Data Transfer Objects)
