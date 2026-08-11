@@ -9,13 +9,13 @@ public class User {
 
     private User() { }
 
-    public static User Create(string username, string email, string passwordHash, decimal balance) {
+    public static User Create(string username, string email, string passwordHash) {
         return new User{
             Id = Guid.NewGuid(), 
             Username = username, 
             Email = email, 
             PasswordHash = passwordHash, 
-            Balance = balance
+            Balance = 100m
         };
     }
 }
