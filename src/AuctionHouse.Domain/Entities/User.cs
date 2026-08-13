@@ -15,7 +15,7 @@ public class User {
             Username = username, 
             Email = email, 
             PasswordHash = passwordHash, 
-            Balance = 100m
+            
         };
     }
 }
