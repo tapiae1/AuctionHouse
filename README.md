@@ -60,3 +60,6 @@ the data storage method without changing anything about the domain.
 - Implement real-time updates for auctions
 - Implement UI 
 - Full gambling house features (Poker, Blackjack, etc.).
+
+#### Tools used 
+- Claude Code was used with a deliberate constraint to not write code, and instead be used as a tutor/guide.
