@@ -31,8 +31,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Endpoints (server side code) 
-// ***** CREATE AUCTION ******
+// ***************************************Endpoints (server side code)********************************************8
+
+
+// ****** CREATE USER ******   
+app.MapPost("/users", async (CreateUserRequest request, CreateUserService service) =>
+{
+    // TODO: Add some validation
+    var user = await service.CreateUserAsync(request.name, request.email, request.passwordHash);
+}); 
+
+// ****** CREATE AUCTION ******
 app.MapPost("/auctions", async (CreateAuctionRequest request, CreateAuctionService service) =>
 {
     try
@@ -47,7 +56,7 @@ app.MapPost("/auctions", async (CreateAuctionRequest request, CreateAuctionServi
     }
 });
 
-// ***** PLACE BID ***** 
+// ****** PLACE BID ******
 app.MapPost("/auctions/{auctionId}/bids", async (Guid auctionId, PlaceBidRequest request, PlaceBidService service) =>
 {
     // Wrapping in a try/catch clause because the bid might not be valid, or the auction was not found.
@@ -68,7 +77,7 @@ app.MapPost("/auctions/{auctionId}/bids", async (Guid auctionId, PlaceBidRequest
     }
 });
 
-// ***** GET AUCTION *****
+// ****** GET AUCTION ******
 app.MapGet("/auctions/{auctionId}", async (Guid auctionId, IAuctionRepository repository) =>
 {
     var auction = await repository.GetByIdAsync(auctionId);
@@ -84,6 +93,7 @@ app.Run();
 // DTOs (Data Transfer Objects)
 record CreateAuctionRequest(Guid sellerId, string title, string description, decimal startingPrice, DateTime startTime, DateTime endTime);
 record PlaceBidRequest(Guid BidderId, decimal Amount);
+record CreateUserRequest(string name, string email, string passwordHash);
 
 
 //Jade-Monet Wiglesworth loves Eduardo Alberto Tapia-Gonzalez very much! <3
