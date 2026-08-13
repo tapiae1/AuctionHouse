@@ -8,6 +8,7 @@ using AuctionHouse.Domain.Repositories;
 using AuctionHouse.Infrastructure.Repositories; 
 using AuctionHouse.Application.Services;
 using AuctionHouse.Domain.Exceptions;
+using Microsoft.AspNetCore.SignalR;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddSingleton<IBidRepository, BidRepository>();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddScoped<PlaceBidService>();
 builder.Services.AddScoped<CreateAuctionService>();
+builder.Services.AddScoped<CreateUserService>();
 
 var app = builder.Build();
 
@@ -39,6 +41,7 @@ app.MapPost("/users", async (CreateUserRequest request, CreateUserService servic
 {
     // TODO: Add some validation
     var user = await service.CreateUserAsync(request.name, request.email, request.passwordHash);
+    return  Results.Created($"/users/{user.Id}", user);
 }); 
 
 // ****** CREATE AUCTION ******
