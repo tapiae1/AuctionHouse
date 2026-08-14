@@ -1,6 +1,49 @@
 @AuctionHouse.API_HostAddress = http://localhost:5023
 
-GET {{AuctionHouse.API_HostAddress}}/weatherforecast/
-Accept: application/json
+# @name createUser
+POST {{AuctionHouse.API_HostAddress}}/users
+Content-Type: application/json
+
+{
+    "username":"eddy",
+    "email":"eduardotapia2002@outlook.com",
+    "passwordHash":"123password"
+}
 
 ###
+
+# @name createBidder
+POST {{AuctionHouse.API_HostAddress}}/users
+Content-Type: application/json
+
+{
+  "username":"Bidder",
+  "email": "bidder@iplacebids.com",
+  "passwordHash": "ilikebids123"
+}
+
+###
+
+# @name createAuction
+POST {{AuctionHouse.API_HostAddress}}/auctions
+Content-Type: application/json
+
+{
+  "sellerId": "{{createUser.response.body.$.id}}",
+  "title": "First Auction",
+  "description": "My first test auction",
+  "startingPrice": 100.00,
+  "startTime": "2026-08-13T15:00:00Z",
+  "endTime": "2026-08-21T15:00:00Z"
+}
+
+###
+
+# @name placeBid
+POST {{AuctionHouse.API_HostAddress}}/auctions/{{createAuction.response.body.$.id}}/bids
+Content-Type: application/json
+
+{
+  "bidderid": "{{createBidder.response.body.$.id}}",
+  "amount": 500.00
+}
