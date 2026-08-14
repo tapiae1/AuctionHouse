@@ -5,7 +5,70 @@ favorite activities.
 
 A console application to demonstrate a simple Auction House (soon to be casino) where Users can bid on auctions, and eventually have a chance to play poker.
 
+### Quick Start    
+   
 
+#### Getting Started:
+1. Install: .NET 10 SDK
+2. Clone into directory: `git clone https://github.com/tapiae1/AuctionHouse.git`
+3. Build: `dotnet build`
+4. Run: `dotnet run --project src/AuctionHouse.API`
+   
+These curl commands are made in the terminal: Create a seller, Create a bidder, Create an auction, Place a bid. 
+
+1. Create a seller: You will get a response with the id. COPY <SELLER_ID>.  
+```bash
+curl -X POST http://localhost:5023/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "eddy",
+    "email": "eddy@example.com",
+    "passwordHash": "password123"
+  }'
+```
+   
+
+2. Create bidder: COPY <BIDDER_ID>
+```bash
+curl -X POST http://localhost:5023/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "bidder",
+    "email": "bidder@example.com",
+    "passwordHash": "password123"
+  }'
+```
+  
+ 
+3. Create auction: Replace <SELLER_ID>. COPY <AUCTION_ID>.  
+```bash
+curl -X POST http://localhost:5023/auctions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sellerId": "<SELLER_ID>",
+    "title": "First Auction",
+    "description": "My first test auction",
+    "startingPrice": 100.00,
+    "startTime": "2026-08-13T15:00:00Z",
+    "endTime": "2026-08-21T15:00:00Z"
+  }'
+```
+  
+
+4. Place a bid. REPLACE <AUCTION_ID> and <BIDDER_ID>.  
+```bash
+curl -X POST http://localhost:5023/auctions/<AUCTION_ID>/bids \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bidderId": "<BIDDER_ID>",
+    "amount": 500.00
+  }'
+```
+
+### Known Limitations
+- Data is in-memory — restarting the app wipes everything
+- passwordHash comes back in plaintext in user responses
+- Nothing stops a seller from bidding on their own auction
 
 ### Structure
 Application follows a Clean/Layered Architecture, where dependencies only point inward, toward the domain.  
