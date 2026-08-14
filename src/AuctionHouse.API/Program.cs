@@ -40,7 +40,7 @@ app.UseHttpsRedirection();
 app.MapPost("/users", async (CreateUserRequest request, CreateUserService service) =>
 {
     // TODO: Add some validation
-    var user = await service.CreateUserAsync(request.name, request.email, request.passwordHash);
+    var user = await service.CreateUserAsync(request.username, request.email, request.passwordHash);
     return  Results.Created($"/users/{user.Id}", user);
 }); 
 
@@ -65,7 +65,7 @@ app.MapPost("/auctions/{auctionId}/bids", async (Guid auctionId, PlaceBidRequest
     // Wrapping in a try/catch clause because the bid might not be valid, or the auction was not found.
     try
     {
-        var bid = await service.PlaceBidAsync(auctionId, request.BidderId, request.Amount);
+        var bid = await service.PlaceBidAsync(auctionId, request.bidderid, request.amount);
         return Results.Ok(bid);
     }
     catch (NotFoundException ex)
@@ -91,12 +91,24 @@ app.MapGet("/auctions/{auctionId}", async (Guid auctionId, IAuctionRepository re
     return Results.Ok(auction);
 });
 
+// ***** GET USER *****
+app.MapGet("/users/{userId}", async (Guid userId, IUserRepository repository) =>
+{
+    var user = await repository.GetByIdAsync(userId);
+    if (user == null)
+    {
+        return Results.NotFound();
+    }
+    
+    return Results.Ok(user);
+});
+
 app.Run();  
 
 // DTOs (Data Transfer Objects)
 record CreateAuctionRequest(Guid sellerId, string title, string description, decimal startingPrice, DateTime startTime, DateTime endTime);
-record PlaceBidRequest(Guid BidderId, decimal Amount);
-record CreateUserRequest(string name, string email, string passwordHash);
+record PlaceBidRequest(Guid bidderid, decimal amount);
+record CreateUserRequest(string username, string email, string passwordHash);
 
 
 //Jade-Monet Wiglesworth loves Eduardo Alberto Tapia-Gonzalez very much! <3
